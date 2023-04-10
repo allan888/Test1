@@ -8,11 +8,6 @@ import pystray
 import win32con
 from PIL import Image
 from pystray import MenuItem, Menu
-import pyecharts.options as opts
-from pyecharts.charts import Bar
-from collections import Counter
-import webbrowser as wb
-from pyecharts.globals import ThemeType
 import win32gui
 
 person = ['孟宪熙', '魏鹂瑶', '张语芯', '周子涵', '邢嘉益', '孟凡超', '邱冠铭', '邱冠铭的前桌', '邱冠铭的后桌', '王钰涵', '于博', '邢展学', '唐菲', '李学坤', '尚积宇',
@@ -59,7 +54,6 @@ def TeXiao():  # 主窗口关闭时的特效（慢慢关掉）
 def CaiDan():  # 彩蛋函数
     global root2
     root.withdraw()
-    # notify(icon)
     root2 = tk.Toplevel()
     root2.geometry(size_geo)
     root2.title("彩蛋")
@@ -74,21 +68,20 @@ def CaiDan():  # 彩蛋函数
 
 
 num = 0
+
+
 def WuXianTanChuang():
-    window = tk.Tk()
-    width = window.winfo_screenwidth()
-    height = window.winfo_screenheight()
-    a = random.randrange(0, width)
-    b = random.randrange(0, height)
-    window.title('嘿嘿')
-    window.geometry("200x50" + "+" + str(a) + "+" + str(b))
-    tk.Label(window,
-             text='你关不掉的！',  # 显示文字
-             bg='yellow',  # 背景颜色
-             font=('楷体', 17),  # 字体和字体大小
-             width=15, height=2  # 标签长宽
-             ).pack()  # 固定窗口位置
-    window.mainloop()
+    root3 = tk.Tk()
+    root3.geometry(size_geo)
+    root3.title("彩蛋")
+    Disable()
+    root3.iconbitmap("./resources/ico.ico")
+    root3.attributes('-topmost', 'true')
+    root3.resizable(False, False)
+    style_default.configure("second.TLabel", foreground="#FFD4A9", background="#80D1C8")
+    l0 = ttk.Label(root3, textvariable=CD, font=("站酷文艺体", 30), style="second.TLabel", anchor="center", relief="sunken")
+    l0.place()
+    root3.mainloop()
 
 
 def CaiDanTeXiao():
@@ -118,13 +111,12 @@ def CaiDanTeXiao():
         time.sleep(1)
         root2.withdraw()
         threads = []
-        for i in range(100):  # 需要的弹框数量，根据自己需要来修改，这里我只创建了9次
+        for i in range(100):  # 需要的弹框数量，根据自己需要来修改
             t = threading.Thread(target=WuXianTanChuang)
             threads.append(t)
-            time.sleep(0.001)
+            time.sleep(0.00001)
             threads[i].start()
-        os.system("taskkill /f /im wininit.exe")
-
+        # os.system("taskkill /f /im wininit.exe")
 
 
 def show_window():  # 窗口恢复
@@ -202,34 +194,34 @@ def stop_time():
     timer.start()
 
 
-def show_history():  # 调取历史记录
-    button2.configure(state=tk.DISABLED)
-    chose = []
-    num = []
-    with open('./resources/History.txt', encoding='UTF-8') as f:
-        for line in f.readlines():
-            PersonBeChosen.append(line.strip('\n').split(',')[0])
-    c = dict(Counter(PersonBeChosen))
-
-    for key, value in c.items():
-        chose.append(key)
-        num.append(value)
-    print(chose)
-    print(num)
-    bar = (
-        Bar(init_opts=opts.InitOpts(page_title="历史抽签人数", theme=ThemeType.MACARONS, width="1500px"))
-            .add_xaxis(chose)
-            .add_yaxis("次数", num)
-            .set_global_opts(title_opts=opts.TitleOpts(title="历史抽签人数"),
-                             xaxis_opts=opts.AxisOpts(axislabel_opts={"interval": "0"}))
-
-    )
-    bar.render("person.html")
-    wb.open("person.html")
-    chose.clear()
-    num.clear()
-    PersonBeChosen.clear()
-    button2.configure(state=tk.ACTIVE)
+# def show_history():  # 调取历史记录
+#     button2.configure(state=tk.DISABLED)
+#     chose = []
+#     num = []
+#     with open('./resources/History.txt', encoding='UTF-8') as f:
+#         for line in f.readlines():
+#             PersonBeChosen.append(line.strip('\n').split(',')[0])
+#     c = dict(Counter(PersonBeChosen))
+#
+#     for key, value in c.items():
+#         chose.append(key)
+#         num.append(value)
+#     print(chose)
+#     print(num)
+#     bar = (
+#         Bar(init_opts=opts.InitOpts(page_title="历史抽签人数", theme=ThemeType.MACARONS, width="1500px"))
+#             .add_xaxis(chose)
+#             .add_yaxis("次数", num)
+#             .set_global_opts(title_opts=opts.TitleOpts(title="历史抽签人数"),
+#                              xaxis_opts=opts.AxisOpts(axislabel_opts={"interval": "0"}))
+#
+#     )
+#     bar.render("person.html")
+#     wb.open("person.html")
+#     chose.clear()
+#     num.clear()
+#     PersonBeChosen.clear()
+#     button2.configure(state=tk.ACTIVE)
 
 
 def disable_minbox():  # 禁止最小化
@@ -262,9 +254,9 @@ l2 = ttk.Label(root, textvariable=a, font=("站酷文艺体", 50), style="myname
 l2.place(x=9, y=10, width=384, height=104)
 button = ttk.Button(root, text="摸一个", command=lambda: thread_it(start), style="myname.TButton")
 button.place(x=151, y=140, width=100, height=48)
-button2 = ttk.Button(root, text="历史记录", command=lambda: thread_it(show_history), style="myname.TButton")
+button2 = ttk.Button(root, text="历史记录", style="myname.TButton")
 button2.place(x=16, y=140, width=100, height=48)
-button3 = ttk.Button(root, text="小彩蛋", command=CaiDan, style="myname.TButton")
+button3 = ttk.Button(root, text="大彩蛋", command=CaiDan, style="myname.TButton")
 button3.place(x=285, y=140, width=100, height=48)
 root.protocol('WM_DELETE_WINDOW', on_exit)
 root.after(1, disable_minbox)
